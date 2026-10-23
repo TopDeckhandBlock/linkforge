@@ -1,0 +1,20 @@
+# контейнер: запуск фермы с админ-панелью в боте
+#   cp .env.example .env  (заполнить ключи)
+#   mkdir -p data
+#   docker compose up -d --build
+#   логи: docker compose logs -f linkforge
+# данные (results.db, links/) живут в ./data и переживают пересборку
+
+services:
+  linkforge:
+    build: .
+    container_name: linkforge
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # точка монтирования из Dockerfile; локальные пути не нужны
+      DB_PATH: /app/data/results.db
+      LINKS_DIR: /app/data/links
+    command: ["bot", "-m", "240"]
+    volumes:
+      - ./data:/app/data

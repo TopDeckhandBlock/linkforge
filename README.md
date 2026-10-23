@@ -10,6 +10,23 @@ Jio-аккаунт живёт до первого redeem.
 
 ---
 
+## Документация
+
+- **[Полный гайд](docs/GUIDE.md)** — от нуля до первой ссылки, по шагам.
+- **[Деплой](docs/DEPLOY.md)** — Windows / Linux VPS (systemd) / Docker; перенос и бэкап.
+- **[Конфигурация](docs/CONFIG.md)** — все переменные `.env`.
+- **[Архитектура](docs/ARCHITECTURE.md)** — цепочка Jio, модули, инварианты.
+
+## Быстрый деплой в Docker
+
+```bash
+cp .env.example .env   # заполнить PVACODES_* и TG_*
+mkdir -p data
+docker compose up -d --build
+```
+
+---
+
 ## Что нужно
 
 | Что | Обязательно | Зачем |
