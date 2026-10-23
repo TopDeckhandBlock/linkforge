@@ -21,7 +21,8 @@ from .config import load_config
 from .console import console
 from .hunter import create_provider
 from .jio.relink import relink as do_relink
-from .runner import Farm, run as run_loop
+from .panel import Panel
+from .runner import Farm, FarmManager, run as run_loop
 from .storage.sessions import SessionStore
 from .storage.store import Store
 
@@ -114,6 +115,28 @@ def check(
             % (colour, verdict, colour, probe.status_code or probe.error or "-", format_age(age), url),
             highlight=False,
         )
+
+
+@app.command()
+def bot(
+    minutes: int = typer.Option(0, "--minutes", "-m", help="Start farming right away for this many minutes (0 = wait for a button)."),
+) -> None:
+    """Serve the Telegram admin panel (blocking)."""
+    cfg = load_config(require_credentials=True)
+    manager = FarmManager(cfg, log=_log, telegram=True)
+    if not manager.farm.bot.enabled:
+        console.print("[error]TG_BOT_TOKEN / TG_CHAT_ID не заданы в .env[/error]")
+        raise typer.Exit(code=1)
+    panel = Panel(manager)
+    console.print("[info]panel is live — Ctrl+C to stop the bot (the farm keeps its own state)[/info]")
+    if minutes:
+        console.print(manager.start(minutes=minutes))
+    manager.farm.bot.send("LinkForge панель запущена.", panel.menu()[1])
+    try:
+        manager.farm.bot.serve(panel.commands(), panel.actions())
+    except KeyboardInterrupt:
+        manager.farm.bot.stop()
+        manager.stop()
 
 
 @app.command()
