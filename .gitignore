@@ -1,0 +1,20 @@
+# секреты
+.env
+*.proxygrab.json
+
+# runtime
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# данные фермы
+results.db
+results.db-*
+links/
+*.log
+ban_history.log
